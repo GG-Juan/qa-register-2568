@@ -19,23 +19,19 @@
         --border-radius-md: 10px;
         --border-radius-lg: 16px;
     }
-
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:var(--font-sans);font-size:14px;color:var(--color-text-primary);background-color: #f4f6f9;padding: 25px;}
     .container {max-width: 1000px; margin: 0 auto; background: #fff; padding: 30px; border-radius: var(--border-radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.06);}
     .page{display:none}.page.active{display:block}
     .card{background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:1rem;box-shadow: 0 2px 5px rgba(0,0,0,0.02)}
-    
     .btn{padding:10px 20px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);transition:.2s;display:inline-flex;align-items:center;gap:8px}
     .btn:hover{background:var(--color-background-secondary);transform: translateY(-1px);}
     .btn-primary{background:#534AB7;color:#fff;border-color:#534AB7;box-shadow: 0 2px 6px rgba(83,74,183,0.2);}.btn-primary:hover{background:#3C3489;border-color:#3C3489}
     .btn-sm{padding:6px 12px;font-size:13px}
     .btn-danger{color:#D85A30;background:#FFF5F2;border-color:#FADCD4;}.btn-danger:hover{background:#FAECE7}
-    
     label{display:block;font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;font-weight:500;margin-top: 6px;}
     input,select{width:100%;border-radius:var(--border-radius-md);border:1px solid var(--color-border-secondary);padding:10px 14px;font-size:14px;outline: none;transition: 0.2s;font-family: var(--font-sans);background-color: #fff;}
     input:focus,select:focus{border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.15)}
-    
     .req{color:#D85A30}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
     .toast{padding:12px 18px;border-radius:var(--border-radius-md);font-size:14px;margin-bottom:1rem;display:none;font-weight: 500;}
@@ -43,18 +39,14 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     .t-ok{background:#EAF3DE;color:#27500A;border:1px solid #97C459}
     .t-err{background:#FCEBEB;color:#791F1F;border:1px solid #F09595}
-    
     .group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px;margin-bottom:1.5rem;margin-top: 10px;}
     .group-card{background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;cursor:pointer;transition:.2s;box-shadow: 0 2px 4px rgba(0,0,0,0.01)}
     .group-card:hover{border-color:#534AB7;background:var(--color-background-secondary);transform: translateY(-3px);box-shadow: 0 6px 12px rgba(83,74,183,0.08)}
-    
     .prog-section{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:15px;border: 1px solid var(--color-border-tertiary)}
     .prog-section-title{font-size:14px;font-weight:600;color:var(--color-text-primary);margin-bottom:12px;border-left: 4px solid #534AB7;padding-left: 10px;}
-    
     .tabs{display:flex;border-bottom:1px solid var(--color-border-secondary);margin-bottom:1.5rem}
     .tab{padding:12px 24px;cursor:pointer;font-size:15px;color:var(--color-text-secondary);border-bottom:3px solid transparent;transition:.15s;display: flex;align-items: center;gap: 8px;font-weight: 500;}
     .tab.active{color:#534AB7;border-bottom:3px solid #534AB7;font-weight:600}
-    
     .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:#534AB7;cursor:pointer;margin-bottom:1.25rem;font-weight: 600;}
     .back-btn:hover{text-decoration:underline}
     .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:1.25rem}
@@ -62,7 +54,6 @@
     .stat-n{font-size:24px;font-weight:600}.stat-l{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
     .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem}
     .filter-bar input,.filter-bar select{width:auto;flex:1;min-width:140px}
-    
     table{width:100%;border-collapse:collapse;font-size:14px}
     th{text-align:left;padding:12px;font-size:12px;color:var(--color-text-secondary);font-weight:600;border-bottom:2px solid var(--color-border-secondary);white-space:nowrap;background: var(--color-background-secondary)}
     td{padding:12px;border-bottom:1px solid var(--color-border-tertiary);vertical-align:middle}
@@ -114,6 +105,10 @@
 
 <script>
 const ADMIN_PW = 'qa2568'; 
+
+// 🚨 นำลิงก์ Web App URL ที่ได้จาก Google Apps Script มาวางแทนที่ข้อความในเครื่องหมายคำพูดด้านล่างนี้ค่ะ
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbdZK8wrAB7uDBWs8VMNPh8DLqwFXa852urIo6fnEK36Pn3W7psyNPhLxXi_bx_bWzvQ/exec";
+
 let entries=JSON.parse(localStorage.getItem('qa_v3')||'[]');
 function save(){localStorage.setItem('qa_v3',JSON.stringify(entries))}
 
@@ -121,40 +116,33 @@ const PTRE=['สบ.สสช','สบ.ทันตะ','ฉุกเฉิน�
 const PVCS=['เทคนิคเภสัช','เวชกิจฉุกเฉิน'];
 
 const GROUPS=[
-  {id:'g1',num:'1',name:'🏢 คณะผู้บริหาร',icon:'ti-building-community',color:'#534AB7',
-   quota:5,flat:true,programs:[],formType:'exec'},
-  {id:'g2',num:'2',name:'🎓 อาจารย์ผู้รับผิดชอบหลักสูตร',icon:'ti-school',color:'#0F6E56',
-   flat:false,formType:'teacher',
+  {id:'g1',num:'1',name:'🏢 คณะผู้บริหาร',icon:'ti-building-community',color:'#534AB7', quota:5,flat:true,programs:[],formType:'exec'},
+  {id:'g2',num:'2',name:'🎓 อาจารย์ผู้รับผิดชอบหลักสูตร',icon:'ti-school',color:'#0F6E56',flat:false,formType:'teacher',
    programs:[
      {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:5}))},
      {label:'📌 ระดับ ปวส.',list:[{name:'เทคนิคเภสัช',quota:2},{name:'เวชกิจฉุกเฉิน',quota:2}]}
    ]},
-  {id:'g3',num:'3',name:'👨‍🏫 อาจารย์ผู้สอน',icon:'ti-chalkboard',color:'#185FA5',
-   flat:false,formType:'teacher',
+  {id:'g3',num:'3',name:'👨‍🏫 อาจารย์ผู้สอน',icon:'ti-chalkboard',color:'#185FA5',flat:false,formType:'teacher',
    programs:[
      {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:'2-3'}))},
      {label:'📌 ระดับ ปวส.',list:PVCS.map(p=>({name:p,quota:'2-3'}))}
    ]},
-  {id:'g4',num:'4',name:'💼 ผู้ใช้บัณฑิต (สถานประกอบการ)',icon:'ti-briefcase',color:'#633806',
-   flat:false,formType:'employer',
+  {id:'g4',num:'4',name:'💼 ผู้ใช้บัณฑิต (สถานประกอบการ)',icon:'ti-briefcase',color:'#633806',flat:false,formType:'employer',
    programs:[
      {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:2}))},
      {label:'📌 ระดับ ปวส.',list:PVCS.map(p=>({name:p,quota:1}))}
    ]},
-  {id:'g5',num:'5',name:'🎖️ ศิษย์เก่า',icon:'ti-user-check',color:'#993556',
-   flat:false,formType:'alumni',
+  {id:'g5',num:'5',name:'🎖️ ศิษย์เก่า',icon:'ti-user-check',color:'#993556',flat:false,formType:'alumni',
    programs:[
      {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:2}))},
      {label:'📌 ระดับ ปวส.',list:PVCS.map(p=>({name:p,quota:1}))}
    ]},
-  {id:'g6',num:'6',name:'🎒 ศิษย์ปัจจุบัน',icon:'ti-users',color:'#3B6D11',
-   flat:false,formType:'student',
+  {id:'g6',num:'6',name:'🎒 ศิษย์ปัจจุบัน',icon:'ti-users',color:'#3B6D11',flat:false,formType:'student',
    programs:[
      {label:'📌 ระดับ ป.ตรี (4 ชั้นปี)',list:PTRE.map(p=>({name:p,quota:8,note:'ชั้นปีละ 2 คน'}))},
      {label:'📌 ระดับ ปวส. (2 ชั้นปี)',list:PVCS.map(p=>({name:p,quota:4,note:'ชั้นปีละ 2 คน'}))}
    ]},
-  {id:'g7',num:'7',name:'🛠️ สายสนับสนุน (บุคลากร)',icon:'ti-tool',color:'#5F5E5A',
-   quota:7,flat:true,programs:[],formType:'support'}
+  {id:'g7',num:'7',name:'🛠️ สายสนับสนุน (บุคลากร)',icon:'ti-tool',color:'#5F5E5A',quota:7,flat:true,programs:[],formType:'support'}
 ];
 
 const FORMS={
@@ -163,14 +151,9 @@ const FORMS={
     fields:[
       {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
       {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
+      {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
       {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
-      {id:'position',label:'🎖️ ตำแหน่งผู้บริหาร',type:'select',options:[
-        '1.ผู้อำนวยการวิทยาลัยการสาธารณสุขสิรินธร จังหวัดอุบลราชธานี',
-        '2.รองผู้อำนวยการด้านบริหารและยุทธศาสตร์',
-        '3.รองผู้อำนวยการด้านวิชาการและประกันคุณภาพการศึกษา',
-        '4.รองผู้อำนวยการด้านวิจัยและบริการวิชาการ',
-        '5.รองผู้อำนวยการด้านกิจการนักศึกษาและทะนุบำรุงศิลปวัฒนธรรม'
-      ],col:2},
+      {id:'org',label:'🏥 สถานที่ปฏิบัติงาน / สังกัดหน่วยงาน',placeholder:'กรอกชื่อหน่วยงานหรือองค์กร',col:2},
       {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
     ]
   },
@@ -179,13 +162,7 @@ const FORMS={
     fields:[
       {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
       {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
-      {id:'position',label:'🎖️ ตำแหน่งทางวิชาการ',placeholder:'เช่น อาจารย์ / ผศ. / รศ. / ดร.',col:1},
-      {id:'dept',label:'📁 ภาควิชา/ฝ่าย/งาน',type:'select',options:[
-        '1.กลุ่มงานบริหารและยุทธศาสตร์',
-        '2.กลุ่มงานวิชาการและประกันคุณภาพการศึกษา',
-        '3.กลุ่มงานวิจัยและบริการวิชาการ',
-        '4.กลุ่มงานกิจการนักศึกษาและทะนุบำรุงศิลปวัฒนธรรม'
-      ],col:1},
+      {id:'position',label:'🎖️ ตำแหน่งทางวิชาการ',placeholder:'เช่น อาจารย์ / ผศ. / รศ. / ดร.',col:2},
       {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
       {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
       {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
@@ -235,14 +212,8 @@ const FORMS={
       {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
       {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
       {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
-      {id:'position',label:'🛠️ ตำแหน่งหน้าที่',placeholder:'ระบุตำแหน่งหน้าที่ เช่น นักวิชาการคอมพิวเตอร์ / พนักงานห้องปฏิบัติการ',col:1},
-      {id:'dept',label:'📁 กลุ่มงานที่สังกัด',type:'select',options:[
-        '1.กลุ่มงานบริหารและยุทธศาสตร์',
-        '2.กลุ่มงานวิชาการและประกันคุณภาพการศึกษา',
-        '3.กลุ่มงานวิจัยและบริการวิชาการ',
-        '4.กลุ่มงานกิจการนักศึกษาและทะนุบำรุงศิลปวัฒนธรรม'
-      ],col:1},
-      {id:'subDept',label:'🏢 หลักสูตร/ฝ่าย/งาน (ระบุเพิ่มเติม)',placeholder:'เช่น งานประกันคุณภาพ / งานทะเบียน / สาขาวิชาทันตกรรม',col:2},
+      {id:'position',label:'🛠️ ตำแหน่งหน้าที่',placeholder:'พนักงานประจำห้องทดลอง',col:1},
+      {id:'dept',label:'📁 กลุ่มงาน / ฝ่าย',placeholder:'กลุ่มงานที่สังกัดภายในคณะ',col:1},
       {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
     ]
   }
@@ -326,7 +297,6 @@ function renderForm(g){
     if(g.formType === 'student' && f.id === 'year' && PVCS.includes(curProg)) {
       optionsToRender = ['ปีที่ 1', 'ปีที่ 2'];
     }
-
     if(f.col===2){
       if(pair.length){fieldsHtml+=`<div class="grid2" style="margin-bottom:12px">${pair.join('')}</div>`;pair=[];}
       let inp='';
@@ -395,20 +365,45 @@ function submitEntry(gid,formType){
   const vals=getFormVals(formType);
   if(!vals.fname||!vals.lname){showToast('⚠️ กรุณากรอกระบุ ชื่อ และ นามสกุล ด้วยนะคะ', 'err');return}
   
-  entries.push({
-    id: Date.now(),
+  const entryData = {
     gid,
     gname: g.name,
     program: curProg || '(ไม่ระบุหลักสูตร)',
     formType,
     ...vals,
-    ts: new Date().toLocaleDateString('th-TH')
-  });
+    ts: new Date().toLocaleDateString('th-TH') + ' ' + new Date().toLocaleTimeString('th-TH')
+  };
+
+  entries.push({ id: Date.now(), ...entryData });
   save();
-  showToast('🎉 บันทึกรายชื่อสำเร็จเรียบร้อยแล้วค่ะ! ✓', 'ok');
-  clearFormFields(formType);
-  refreshFormList();
-  renderHome();
+  
+  showToast('⏳ กำลังส่งข้อมูลไปยัง Google Sheets...', 'ok');
+
+  if(!SCRIPT_URL || SCRIPT_URL.includes("ใส่ลิงก์เว็บแอป")) {
+     showToast('⚠️ ตรวจพบระบบออฟไลน์: บันทึกเฉพาะในเครื่องนี้เท่านั้น (กรุณาใส่ SCRIPT_URL ในโค้ดด้วยค่ะ)', 'err');
+     clearFormFields(formType);
+     refreshFormList();
+     renderHome();
+     return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    cache: 'no-cache',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(entryData)
+  })
+  .then(() => {
+    showToast('🎉 บันทึกข้อมูลเข้า Google Sheets เรียบร้อยเรียลไทม์แล้วค่ะ! ✓', 'ok');
+    clearFormFields(formType);
+    refreshFormList();
+    renderHome();
+  })
+  .catch(err => {
+    console.error(err);
+    showToast('⚠️ ส่งข้อมูลออนไลน์ไม่สำเร็จ แต่บันทึกไว้ในเครื่องให้แล้วค่ะ', 'err');
+  });
 }
 
 function refreshFormList(){
@@ -461,7 +456,6 @@ function renderAdmin(){
   const q=(document.getElementById('s-search')||{value:''}).value.toLowerCase();
   const gid=(document.getElementById('s-group')||{value:''}).value;
   const prog=(document.getElementById('s-prog')||{value:''}).value;
-
   const totals=GROUPS.reduce((a,g)=>(a[g.id]=countG(g.id,''),a),{});
   const grandQ=GROUPS.reduce((a,g)=>a+totalQuota(g),0);
 
@@ -475,9 +469,9 @@ function renderAdmin(){
   if(prog)data=data.filter(e=>e.program===prog);
 
   document.getElementById('page-admin').innerHTML=`
-    <div class="admin-note">🛡️ <b>ข้อมูลเห็นเฉพาะผู้รับผิดชอบงานเท่านั้น</b> &nbsp;|&nbsp; 🔐 <a href="#" onclick="adminLogout();return false" style="color:#185FA5; font-weight:600">ออกจากระบบที่นี่</a></div>
+    <div class="admin-note">🛡️ <b>ข้อมูลเห็นเฉพาะผู้รับผิดชอบงานเท่านั้น (ประวัติเครื่องนี้)</b> &nbsp;|&nbsp; <a href="#" onclick="adminLogout();return false" style="color:#185FA5; font-weight:600">ออกจากระบบที่นี่</a></div>
     <div class="stat-grid">
-      <div class="stat-card" style="background: #FFFBEB; border-color: #FDE68A;"><div class="stat-n" style="color:#D97706">${entries.length}/${grandQ}</div><div class="stat-l" style="font-weight:600;color:#B45309">📈 ยอดรวมทั้งหมด</div></div>
+      <div class="stat-card" style="background: #FFFBEB; border-color: #FDE68A;"><div class="stat-n" style="color:#D97706">${entries.length}/${grandQ}</div><div class="stat-l" style="font-weight:600;color:#B45309">📈 ยอดรวมในเครื่องนี้</div></div>
       ${GROUPS.slice(0,3).map(g=>`<div class="stat-card"><div class="stat-n" style="color:${g.color}">${totals[g.id]}/${totalQuota(g)}</div><div class="stat-l" style="font-size:11px">${g.name}</div></div>`).join('')}
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1.5rem">
@@ -492,10 +486,10 @@ function renderAdmin(){
     </div>
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
-        <p style="font-size:16px;font-weight:600;margin:0;color:#2D3748">📋 ข้อมูลตารางสรุปรายชื่อทั้งหมด</p>
+        <p style="font-size:16px;font-weight:600;margin:0;color:#2D3748">📋 ข้อมูลตารางสรุปรายชื่อ (ดูฐานข้อมูลกลางโปรดดูที่ Google Sheets 📊)</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-sm" style="background:#ECFDF5; color:#065F46; border-color:#A7F3D0" onclick="exportCSV()">📊 ดาวน์โหลดไฟล์ Excel (CSV)</button>
-          <button class="btn btn-sm btn-danger" onclick="clearAll()">💥 รีเซ็ตล้างข้อมูลทั้งหมด</button>
+          <button class="btn btn-sm" style="background:#ECFDF5; color:#065F46; border-color:#A7F3D0" onclick="exportCSV()">📊 ดาวน์โหลดไฟล์เครื่องนี้ (CSV)</button>
+          <button class="btn btn-sm btn-danger" onclick="clearAll()">💥 รีเซ็ตรายชื่อเครื่องนี้</button>
         </div>
       </div>
       <div class="filter-bar">
@@ -510,10 +504,8 @@ function renderAdmin(){
 function mainNav(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  
   const targetPage = document.getElementById('page-'+p);
   if(targetPage) targetPage.classList.add('active');
-  
   const isAdmin=p==='admin-login'||p==='admin';
   document.querySelectorAll('.tab')[isAdmin?1:0].classList.add('active');
   if(p==='home')renderHome();
@@ -529,11 +521,9 @@ function adminLogin(){
     document.getElementById('pw-err').style.display='block';
   }
 }
-
 function adminLogout(){sessionStorage.removeItem('qa_admin'); if(document.getElementById('pw-input')) document.getElementById('pw-input').value=''; mainNav('admin-login');}
-
-function deleteEntry(id){if(!confirm('🔮 ยืนยันที่จะลบรายชื่อผู้เข้าสัมภาษณ์รายนี้ออกไหมคะ?'))return;entries=entries.filter(e=>e.id!==id);save();renderAdmin();}
-function clearAll(){if(!confirm('🚨 คำเตือน! คุณกำลังจะลบข้อมูลที่กรอกทั้งหมดออกถาวร ยืนยันไหมคะ?'))return;entries=[];save();renderAdmin();}
+function deleteEntry(id){if(!confirm('🔮 ยืนยันที่จะลบรายชื่อผู้เข้าสัมภาษณ์รายนี้ออกไหมคะ? (ลบเฉพาะในเครื่องนี้)'))return;entries=entries.filter(e=>e.id!==id);save();renderAdmin();}
+function clearAll(){if(!confirm('🚨 ยืนยันลบประวัติเฉพาะเครื่องนี้ไหมคะ? (ไม่มีผลกับข้อมูลใน Google Sheets)'))return;entries=[];save();renderAdmin();}
 
 function exportCSV(){
   if(!entries.length){alert('ยังไม่มีรายชื่อเก็บไว้สำหรับนำออกเลยค่ะ');return}
@@ -545,14 +535,9 @@ function exportCSV(){
   a.download='สรุปรายชื่อผู้เข้าสัมภาษณ์_QA.csv';a.click();
 }
 
-// โหลดเข้าสู่ระบบครั้งแรก
 window.onload = function() {
-  if(sessionStorage.getItem('qa_admin')){
-    mainNav('admin');
-    renderAdmin();
-  } else {
-    mainNav('home');
-  }
+  if(sessionStorage.getItem('qa_admin')){mainNav('admin');renderAdmin();} 
+  else {mainNav('home');}
 };
 </script>
 </body>
