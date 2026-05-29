@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลงทะเบียนผู้เข้าสัมภาษณ์</title>
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/google-sans">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    
+    <style>
+    :root {
+        --font-sans: 'Product Sans', 'Google Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --color-text-primary: #2D3748;
+        --color-text-secondary: #718096;
+        --color-background-primary: #FFFFFF;
+        --color-background-secondary: #F7FAFC;
+        --color-border-secondary: #E2E8F0;
+        --color-border-tertiary: #EDF2F7;
+        --border-radius-md: 10px;
+        --border-radius-lg: 16px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-sans);font-size:14px;color:var(--color-text-primary);background-color: #f4f6f9;padding: 25px;}
+    .container {max-width: 1000px; margin: 0 auto; background: #fff; padding: 30px; border-radius: var(--border-radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.06);}
+    .page{display:none}.page.active{display:block}
+    .card{background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:1rem;box-shadow: 0 2px 5px rgba(0,0,0,0.02)}
+    
+    .btn{padding:10px 20px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);transition:.2s;display:inline-flex;align-items:center;gap:8px}
+    .btn:hover{background:var(--color-background-secondary);transform: translateY(-1px);}
+    .btn-primary{background:#534AB7;color:#fff;border-color:#534AB7;box-shadow: 0 2px 6px rgba(83,74,183,0.2);}.btn-primary:hover{background:#3C3489;border-color:#3C3489}
+    .btn-sm{padding:6px 12px;font-size:13px}
+    .btn-danger{color:#D85A30;background:#FFF5F2;border-color:#FADCD4;}.btn-danger:hover{background:#FAECE7}
+    
+    label{display:block;font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;font-weight:500;margin-top: 6px;}
+    input,select{width:100%;border-radius:var(--border-radius-md);border:1px solid var(--color-border-secondary);padding:10px 14px;font-size:14px;outline: none;transition: 0.2s;font-family: var(--font-sans);background-color: #fff;}
+    input:focus,select:focus{border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.15)}
+    
+    .req{color:#D85A30}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .toast{padding:12px 18px;border-radius:var(--border-radius-md);font-size:14px;margin-bottom:1rem;display:none;font-weight: 500;}
+    .toast.show{display:block;animation: fadeIn 0.3s;}
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    .t-ok{background:#EAF3DE;color:#27500A;border:1px solid #97C459}
+    .t-err{background:#FCEBEB;color:#791F1F;border:1px solid #F09595}
+    
+    .group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px;margin-bottom:1.5rem;margin-top: 10px;}
+    .group-card{background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;cursor:pointer;transition:.2s;box-shadow: 0 2px 4px rgba(0,0,0,0.01)}
+    .group-card:hover{border-color:#534AB7;background:var(--color-background-secondary);transform: translateY(-3px);box-shadow: 0 6px 12px rgba(83,74,183,0.08)}
+    
+    .prog-section{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:15px;border: 1px solid var(--color-border-tertiary)}
+    .prog-section-title{font-size:14px;font-weight:600;color:var(--color-text-primary);margin-bottom:12px;border-left: 4px solid #534AB7;padding-left: 10px;}
+    
+    .tabs{display:flex;border-bottom:1px solid var(--color-border-secondary);margin-bottom:1.5rem}
+    .tab{padding:12px 24px;cursor:pointer;font-size:15px;color:var(--color-text-secondary);border-bottom:3px solid transparent;transition:.15s;display: flex;align-items: center;gap: 8px;font-weight: 500;}
+    .tab.active{color:#534AB7;border-bottom:3px solid #534AB7;font-weight:600}
+    
+    .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:#534AB7;cursor:pointer;margin-bottom:1.25rem;font-weight: 600;}
+    .back-btn:hover{text-decoration:underline}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:1.25rem}
+    .stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px;border: 1px solid var(--color-border-secondary);text-align: center;}
+    .stat-n{font-size:24px;font-weight:600}.stat-l{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem}
+    .filter-bar input,.filter-bar select{width:auto;flex:1;min-width:140px}
+    
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th{text-align:left;padding:12px;font-size:12px;color:var(--color-text-secondary);font-weight:600;border-bottom:2px solid var(--color-border-secondary);white-space:nowrap;background: var(--color-background-secondary)}
+    td{padding:12px;border-bottom:1px solid var(--color-border-tertiary);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--color-background-secondary)}
+    .empty{text-align:center;padding:2.5rem;color:var(--color-text-secondary);font-size:14px}
+    .progress-bar{height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden;margin-top:10px}
+    .progress-fill{height:100%;border-radius:4px;transition:.3s}
+    .pw-wrap{max-width:400px;margin:2rem auto;text-align:center;padding:2.5rem 1.5rem}
+    .admin-note{background:#E6F1FB;border:1px solid #85B7EB;border-radius:var(--border-radius-md);padding:12px 16px;font-size:13px;color:#185FA5;margin-bottom:1.25rem}
+    .form-section{font-size:14px;font-weight:600;color:#534AB7;margin:18px 0 12px;border-bottom:2px solid var(--color-border-secondary);padding-bottom:6px}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="padding:0.5rem 0 1.25rem; border-bottom: 2px dashed #E2E8F0; margin-bottom: 1.5rem;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:0.4rem">
+        <i class="ti ti-clipboard-list" style="font-size:24px;color:#534AB7" aria-hidden="true"></i>
+        <span style="font-size:22px;font-weight:600;color:#2D3748;letter-spacing:-0.5px">✨ ระบบลงทะเบียนผู้เข้าสัมภาษณ์ ✨</span>
+      </div>
+      <p style="font-size:13px;color:var(--color-text-secondary);padding-left:36px">🧸 งานประกันคุณภาพการศึกษา — โครงการประเมินคุณภาพการศึกษา</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="mainNav('home')">📝 หน้าลงทะเบียน</div>
+      <div class="tab" onclick="mainNav('admin-login')">🔒 สำหรับผู้จัด (Admin)</div>
+    </div>
+
+    <div id="page-home" class="page active"></div>
+    <div id="page-subgroup" class="page"></div>
+    <div id="page-form" class="page"></div>
+    
+    <div id="page-admin-login" class="page">
+      <div class="pw-wrap card">
+        <p style="font-size:40px;margin-bottom:10px">🔑</p>
+        <p style="font-weight:600;margin-bottom:4px;font-size:18px;color:#2D3748">เข้าสู่ระบบผู้จัดโครงการ</p>
+        <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:20px">🔐 ปลอดภัยเฉพาะผู้รับผิดชอบงานเท่านั้น</p>
+        <div style="text-align:left;margin-bottom:15px">
+          <label for="pw-input">🔑 รหัสผ่านแอดมิน</label>
+          <input type="password" id="pw-input" placeholder="กรอกรหัสผ่านเพื่อเข้าสู่ระบบ" onkeydown="if(event.key==='Enter')adminLogin()">
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;padding:12px" onclick="adminLogin()">🚀 เข้าสู่ระบบ</button>
+        <p id="pw-err" style="font-size:13px;color:#D85A30;margin-top:10px;display:none">❌ รหัสผ่านไม่ถูกต้อง โปรดตรวจสอบอีกครั้ง</p>
+      </div>
+    </div>
+    <div id="page-admin" class="page"></div>
+</div>
+
+<script>
+const ADMIN_PW = 'qa2568'; 
+let entries=JSON.parse(localStorage.getItem('qa_v3')||'[]');
+function save(){localStorage.setItem('qa_v3',JSON.stringify(entries))}
+
+const PTRE=['สบ.สสช','สบ.ทันตะ','ฉุกเฉินการแพทยบัณฑิต'];
+const PVCS=['เทคนิคเภสัช','เวชกิจฉุกเฉิน'];
+
+const GROUPS=[
+  {id:'g1',num:'1',name:'🏢 คณะผู้บริหาร',icon:'ti-building-community',color:'#534AB7',
+   quota:5,flat:true,programs:[],formType:'exec'},
+  {id:'g2',num:'2',name:'🎓 อาจารย์ผู้รับผิดชอบหลักสูตร',icon:'ti-school',color:'#0F6E56',
+   flat:false,formType:'teacher',
+   programs:[
+     {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:5}))},
+     {label:'📌 ระดับ ปวส.',list:[{name:'เทคนิคเภสัช',quota:2},{name:'เวชกิจฉุกเฉิน',quota:2}]}
+   ]},
+  {id:'g3',num:'3',name:'👨‍🏫 อาจารย์ผู้สอน',icon:'ti-chalkboard',color:'#185FA5',
+   flat:false,formType:'teacher',
+   programs:[
+     {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:'2-3'}))},
+     {label:'📌 ระดับ ปวส.',list:PVCS.map(p=>({name:p,quota:'2-3'}))}
+   ]},
+  {id:'g4',num:'4',name:'💼 ผู้ใช้บัณฑิต (สถานประกอบการ)',icon:'ti-briefcase',color:'#633806',
+   flat:false,formType:'employer',
+   programs:[
+     {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:2}))},
+     {label:'📌 ระดับ ปวส.',list:PVCS.map(p=>({name:p,quota:1}))}
+   ]},
+  {id:'g5',num:'5',name:'🎖️ ศิษย์เก่า',icon:'ti-user-check',color:'#993556',
+   flat:false,formType:'alumni',
+   programs:[
+     {label:'📌 ระดับ ป.ตรี',list:PTRE.map(p=>({name:p,quota:2}))},
+     {label:'📌 ระดับ ปวส.',list:PVCS.map(p=>({name:p,quota:1}))}
+   ]},
+  {id:'g6',num:'6',name:'🎒 ศิษย์ปัจจุบัน',icon:'ti-users',color:'#3B6D11',
+   flat:false,formType:'student',
+   programs:[
+     {label:'📌 ระดับ ป.ตรี (4 ชั้นปี)',list:PTRE.map(p=>({name:p,quota:8,note:'ชั้นปีละ 2 คน'}))},
+     {label:'📌 ระดับ ปวส. (2 ชั้นปี)',list:PVCS.map(p=>({name:p,quota:4,note:'ชั้นปีละ 2 คน'}))}
+   ]},
+  {id:'g7',num:'7',name:'🛠️ สายสนับสนุน (บุคลากร)',icon:'ti-tool',color:'#5F5E5A',
+   quota:7,flat:true,programs:[],formType:'support'}
+];
+
+const FORMS={
+  exec:{
+    title:'📋 ข้อมูลทั่วไปของผู้บริหาร',
+    fields:[
+      {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
+      {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
+      {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
+      {id:'position',label:'🎖️ ตำแหน่งผู้บริหาร',type:'select',options:[
+        '1.ผู้อำนวยการวิทยาลัยการสาธารณสุขสิรินธร จังหวัดอุบลราชธานี',
+        '2.รองผู้อำนวยการด้านบริหารและยุทธศาสตร์',
+        '3.รองผู้อำนวยการด้านวิชาการและประกันคุณภาพการศึกษา',
+        '4.รองผู้อำนวยการด้านวิจัยและบริการวิชาการ',
+        '5.รองผู้อำนวยการด้านกิจการนักศึกษาและทะนุบำรุงศิลปวัฒนธรรม'
+      ],col:2},
+      {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
+    ]
+  },
+  teacher:{
+    title:'📋 ข้อมูลคุณอาจารย์',
+    fields:[
+      {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
+      {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
+      {id:'position',label:'🎖️ ตำแหน่งทางวิชาการ',placeholder:'เช่น อาจารย์ / ผศ. / รศ. / ดร.',col:1},
+      {id:'dept',label:'📁 ภาควิชา/ฝ่าย/งาน',type:'select',options:[
+        '1.กลุ่มงานบริหารและยุทธศาสตร์',
+        '2.กลุ่มงานวิชาการและประกันคุณภาพการศึกษา',
+        '3.กลุ่มงานวิจัยและบริการวิชาการ',
+        '4.กลุ่มงานกิจการนักศึกษาและทะนุบำรุงศิลปวัฒนธรรม'
+      ],col:1},
+      {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
+      {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
+      {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
+    ]
+  },
+  employer:{
+    title:'📋 ข้อมูลผู้ใช้บัณฑิต',
+    fields:[
+      {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
+      {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
+      {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
+      {id:'line',label:'💬 ไอดี Line',placeholder:'Line ID',col:1},
+      {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
+      {id:'position',label:'💼 ตำแหน่งงานปัจจุบัน',placeholder:'ระบุตำแหน่งงานหรือหน้าที่',col:1},
+      {id:'org',label:'🏥 สถานที่ปฏิบัติงาน',placeholder:'หน่วยงาน / โรงพยาบาล / บริษัท',col:2},
+      {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
+    ]
+  },
+  alumni:{
+    title:'📋 ข้อมูลพี่ศิษย์เก่า',
+    fields:[
+      {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
+      {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
+      {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
+      {id:'line',label:'💬 ไอดี Line',placeholder:'Line ID',col:1},
+      {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
+      {id:'position',label:'💼 ตำแหน่งงานปัจจุบัน',placeholder:'ระบุตำแหน่งงานหรือหน้าที่',col:1},
+      {id:'org',label:'🏥 สถานที่ปฏิบัติงาน',placeholder:'หน่วยงาน / โรงพยาบาล / บริษัท',col:2},
+      {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
+    ]
+  },
+  student:{
+    title:'📋 ข้อมูลน้องนักศึกษา',
+    fields:[
+      {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
+      {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
+      {id:'year',label:'🌱 ชั้นปีปัจจุบัน',type:'select',options:['ปีที่ 1','ปีที่ 2','ปีที่ 3','ปีที่ 4'],col:2},
+      {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
+      {id:'line',label:'💬 ไอดี Line',placeholder:'Line ID',col:1},
+      {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
+    ]
+  },
+  support:{
+    title:'📋 ข้อมูลบุคลากรสายสนับสนุน',
+    fields:[
+      {id:'fname',label:'✍️ ชื่อจริง',req:true,placeholder:'กรอกชื่อจริง',col:1},
+      {id:'lname',label:'✍️ นามสกุล',req:true,placeholder:'กรอกนามสกุล',col:1},
+      {id:'phone',label:'📞 เบอร์โทรศัพท์',placeholder:'08X-XXX-XXXX',col:1},
+      {id:'email',label:'📧 อีเมลติดต่อ',type:'email',placeholder:'example@email.com',col:1},
+      {id:'position',label:'🛠️ ตำแหน่งหน้าที่',placeholder:'ระบุตำแหน่งหน้าที่ เช่น นักวิชาการคอมพิวเตอร์ / พนักงานห้องปฏิบัติการ',col:1},
+      {id:'dept',label:'📁 กลุ่มงานที่สังกัด',type:'select',options:[
+        '1.กลุ่มงานบริหารและยุทธศาสตร์',
+        '2.กลุ่มงานวิชาการและประกันคุณภาพการศึกษา',
+        '3.กลุ่มงานวิจัยและบริการวิชาการ',
+        '4.กลุ่มงานกิจการนักศึกษาและทะนุบำรุงศิลปวัฒนธรรม'
+      ],col:1},
+      {id:'subDept',label:'🏢 หลักสูตร/ฝ่าย/งาน (ระบุเพิ่มเติม)',placeholder:'เช่น งานประกันคุณภาพ / งานทะเบียน / สาขาวิชาทันตกรรม',col:2},
+      {id:'note',label:'💡 หมายเหตุเพิ่มเติม',placeholder:'ข้อความเพิ่มเติมอื่น ๆ (ถ้ามี)',col:2}
+    ]
+  }
+};
+
+function totalQuota(g){
+  if(g.flat) return g.quota;
+  let t=0;
+  g.programs.forEach(s=>s.list.forEach(p=>{
+    const q=typeof p.quota==='string'?parseInt(p.quota.split('-')[1]):p.quota;
+    t+=q;
+  }));
+  return t;
+}
+function countG(gid,prog){return entries.filter(e=>e.gid===gid&&(!prog||e.program===prog)).length}
+
+let curGid='',curProg='',curSecLabel='';
+
+function renderHome(){
+  const homeElement = document.getElementById('page-home');
+  if(!homeElement) return;
+  homeElement.innerHTML=`
+    <p style="font-size:15px;color:var(--color-text-secondary);margin-bottom:1.25rem">👋 สวัสดีค่ะ โปรดเลือกกลุ่มเป้าหมายด้านล่างนี้เพื่อกรอกรายชื่อนะคะ:</p>
+    <div class="group-grid">${GROUPS.map(g=>{
+      const total=totalQuota(g);const filled=countG(g.id,'');
+      const pct=Math.min(100,Math.round(filled/total*100));
+      return `<div class="group-card" onclick="selectGroup('${g.id}')">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <i class="ti ${g.icon}" style="font-size:18px;color:${g.color}" aria-hidden="true"></i>
+          <span style="font-size:11px;font-weight:600;color:${g.color}">กลุ่มที่ ${g.num}</span>
+        </div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:6px;color:#2D3748">${g.name}</div>
+        <div style="font-size:13px;color:var(--color-text-secondary)">🔋 บันทึกแล้ว: <b>${filled}/${total}</b> คน</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${g.color}"></div></div>
+      </div>`;
+    }).join('')}</div>`;
+}
+
+function selectGroup(gid){
+  const g=GROUPS.find(x=>x.id===gid);
+  curGid=gid;
+  if(g.flat){curProg='';curSecLabel='';renderForm(g);}
+  else renderSubgroup(g);
+}
+
+function renderSubgroup(g){
+  let html=`<div class="back-btn" onclick="mainNav('home')">👈 กลับไปเลือกกลุ่มเป้าหมายอื่น</div>
+  <p style="font-size:17px;font-weight:600;margin-bottom:0.3rem;color:#2D3748"><i class="ti ${g.icon}" style="margin-right:8px;color:${g.color}" aria-hidden="true"></i>${g.name}</p>
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:1.25rem">📍 โปรดเลือกหลักสูตร / สาขาวิชาที่คุณต้องการบันทึกรายชื่อค่ะ</p>`;
+  g.programs.forEach(sec=>{
+    html+=`<div class="prog-section"><div class="prog-section-title">${sec.label}</div><div style="display:flex;flex-wrap:wrap;gap:12px">`;
+    sec.list.forEach(p=>{
+      const f=countG(g.id,p.name);
+      const qn=typeof p.quota==='string'?parseInt(p.quota.split('-')[1]):p.quota;
+      const pct=Math.min(100,Math.round(f/qn*100));
+      html+=`<div class="group-card" style="min-width:180px;max-width:240px;flex:1;" onclick="selectProg('${g.id}','${p.name}','${sec.label}')">
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;color:#2D3748">🔹 ${p.name}</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">📊 บันทึกแล้ว: ${f}/${p.quota} คน ${p.note?'<br><small>('+p.note+')</small>':''}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${g.color}"></div></div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+  document.getElementById('page-subgroup').innerHTML=html;
+  mainNav('subgroup');
+}
+
+function selectProg(gid,prog,secLabel){
+  curGid=gid;curProg=prog;curSecLabel=secLabel;
+  const g=GROUPS.find(x=>x.id===gid);
+  renderForm(g);
+}
+
+function renderForm(g){
+  const ft=FORMS[g.formType];
+  const subtitle=curProg?`📌 ${curSecLabel} — สาขา${curProg}`:'📌 รวมทุกหลักสูตรสาขาวิชา';
+  let fieldsHtml='';
+  let pair=[];
+  ft.fields.forEach((f,i)=>{
+    let optionsToRender = f.options || [];
+    if(g.formType === 'student' && f.id === 'year' && PVCS.includes(curProg)) {
+      optionsToRender = ['ปีที่ 1', 'ปีที่ 2'];
+    }
+
+    if(f.col===2){
+      if(pair.length){fieldsHtml+=`<div class="grid2" style="margin-bottom:12px">${pair.join('')}</div>`;pair=[];}
+      let inp='';
+      if(f.type==='select') inp=`<select id="ff-${f.id}"><option value="">📬 -- โปรดเลือก --</option>${optionsToRender.map(o=>`<option>${o}</option>`).join('')}</select>`;
+      else inp=`<input type="${f.type||'text'}" id="ff-${f.id}" placeholder="${f.placeholder}">`;
+      fieldsHtml+=`<div style="margin-bottom:12px"><label>${f.label}${f.req?` <span class="req">*</span>`:''}</label>${inp}</div>`;
+    } else {
+      let inp='';
+      if(f.type==='select') inp=`<select id="ff-${f.id}"><option value="">📬 -- โปรดเลือก --</option>${optionsToRender.map(o=>`<option>${o}</option>`).join('')}</select>`;
+      else inp=`<input type="${f.type||'text'}" id="ff-${f.id}" placeholder="${f.placeholder}">`;
+      pair.push(`<div><label>${f.label}${f.req?` <span class="req">*</span>`:''}</label>${inp}</div>`);
+      if(pair.length===2){fieldsHtml+=`<div class="grid2" style="margin-bottom:12px">${pair.join('')}</div>`;pair=[];}
+    }
+  });
+  if(pair.length) fieldsHtml+=`<div class="grid2" style="margin-bottom:12px">${pair.join('')}</div>`;
+
+  document.getElementById('page-form').innerHTML=`
+    <div class="back-btn" id="form-back" onclick="${curProg?`renderSubgroup(GROUPS.find(x=>x.id==='${g.id}'))`:`mainNav('home')`}">
+      🔙 ${curProg?`กลับหน้าเลือกสาขาวิชา`:`กลับหน้าหลักกลุ่มเป้าหมาย`}
+    </div>
+    <div class="card">
+      <p style="font-size:17px;font-weight:600;margin-bottom:0.3rem;color:#2D3748"><i class="ti ${g.icon}" style="margin-right:8px;color:${g.color}" aria-hidden="true"></i>${g.name}</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:1.25rem">${subtitle}</p>
+      <div id="toast-form" class="toast"></div>
+      <p class="form-section">${ft.title}</p>
+      ${fieldsHtml}
+      <div style="display:flex;gap:12px;margin-top:20px">
+        <button class="btn btn-primary" onclick="submitEntry('${g.id}','${g.formType}')">💾 บันทึกและส่งข้อมูล</button>
+        <button class="btn" onclick="clearFormFields('${g.formType}')">🧹 ล้างข้อมูลฟอร์ม</button>
+      </div>
+    </div>
+    <div id="form-list-area" style="display:none">
+      <div class="card">
+        <p style="font-size:15px;font-weight:600;margin-bottom:0.75rem;color:#2D3748">📁 รายชื่อล่าสุดที่คุณบันทึกไว้ในกลุ่มนี้ <span id="form-count" style="font-size:13px;color:var(--color-text-secondary)"></span></p>
+        <div id="form-table-wrap"></div>
+      </div>
+    </div>`;
+  mainNav('form');
+  refreshFormList();
+}
+
+function getFormVals(formType){
+  const ft=FORMS[formType];
+  const vals={};
+  ft.fields.forEach(f=>{
+    const el=document.getElementById('ff-'+f.id);
+    if(el) vals[f.id]=(el.value||'').trim();
+  });
+  return vals;
+}
+
+function clearFormFields(formType){
+  const ft=FORMS[formType];
+  ft.fields.forEach(f=>{const el=document.getElementById('ff-'+f.id);if(el)el.value='';});
+}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast-form');
+  if(!t)return;
+  t.innerHTML=msg;t.className=`toast show t-${type}`;
+  setTimeout(()=>{if(t)t.className='toast'},4000);
+}
+
+function submitEntry(gid,formType){
+  const g=GROUPS.find(x=>x.id===gid);
+  const vals=getFormVals(formType);
+  if(!vals.fname||!vals.lname){showToast('⚠️ กรุณากรอกระบุ ชื่อ และ นามสกุล ด้วยนะคะ', 'err');return}
+  
+  entries.push({
+    id: Date.now(),
+    gid,
+    gname: g.name,
+    program: curProg || '(ไม่ระบุหลักสูตร)',
+    formType,
+    ...vals,
+    ts: new Date().toLocaleDateString('th-TH')
+  });
+  save();
+  showToast('🎉 บันทึกรายชื่อสำเร็จเรียบร้อยแล้วค่ะ! ✓', 'ok');
+  clearFormFields(formType);
+  refreshFormList();
+  renderHome();
+}
+
+function refreshFormList(){
+  const area=document.getElementById('form-list-area');
+  const wrap=document.getElementById('form-table-wrap');
+  const cnt=document.getElementById('form-count');
+  if(!area)return;
+  const data=entries.filter(e=>e.gid===curGid&&e.program===(curProg||'(ไม่ระบุหลักสูตร)'));
+  cnt.textContent=`(${data.length} รายชื่อ)`;
+  if(!data.length){area.style.display='none';return}
+  area.style.display='block';
+  wrap.innerHTML=buildMiniTable(data);
+}
+
+function buildMiniTable(data){
+  return `<div style="overflow-x:auto"><table><thead><tr>
+    <th>ลำดับ</th><th>ชื่อ-นามสกุล</th><th>ช่องทางติดต่อ</th><th>ข้อมูลเพิ่มเติม</th>
+    </tr></thead><tbody>
+    ${data.map((e,i)=>`<tr>
+      <td style="color:var(--color-text-secondary);text-align:center">${i+1}</td>
+      <td style="font-weight:500">👤 ${e.fname} ${e.lname}</td>
+      <td style="font-size:13px">📞 ${e.phone||'—'}<br><small>${e.email||''}</small></td>
+      <td style="font-size:13px">📌 ${e.position||e.year||'—'}${e.dept ? `<br><small>📂 ${e.dept}</small>` : ''}${e.subDept ? `<br><small>🏢 ${e.subDept}</small>` : ''}</td>
+    </tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+function buildAdminTable(data){
+  if(!data.length) return '<p class="empty">🫙<br>ยังไม่มีรายชื่อผู้บันทึกเข้ามาเลยจ้า</p>';
+  const allFields=['fname','lname','position','year','dept','subDept','phone','line','email','org','note'];
+  const labels={fname:'ชื่อ',lname:'นามสกุล',position:'ตำแหน่ง/วิชาการ',year:'ชั้นปี',dept:'ภาควิชา/กลุ่มงาน',subDept:'หลักสูตร/ฝ่าย/งาน',phone:'เบอร์โทร',line:'Line ID',email:'อีเมล',org:'สถานที่',note:'หมายเหตุ'};
+  const usedFields=allFields.filter(f=>data.some(e=>e[f]));
+  return `<div style="overflow-x:auto"><table><thead><tr>
+    <th>#</th><th>กลุ่มเป้าหมาย</th><th>หลักสูตร/สาขา</th>
+    ${usedFields.map(f=>`<th>${labels[f]}</th>`).join('')}
+    <th>วันที่กรอก</th><th>การจัดการ</th>
+  </tr></thead><tbody>
+  ${data.map((e,i)=>`<tr>
+    <td style="color:var(--color-text-secondary);text-align:center">${i+1}</td>
+    <td><span style="font-size:11px;background:#EEEDFE;color:#3C3489;padding:4px 8px;border-radius:6px;white-space:nowrap;font-weight:600">${e.gname}</span></td>
+    <td style="font-size:13px;white-space:nowrap">${e.program}</td>
+    ${usedFields.map(f=>`<td style="font-size:13px">${e[f]||'—'}</td>`).join('')}
+    <td style="font-size:12px;color:var(--color-text-secondary);white-space:nowrap">📆 ${e.ts}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteEntry(${e.id})" aria-label="ลบ"><i class="ti ti-trash" aria-hidden="true"></i> ลบ</button></td>
+  </tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+function renderAdmin(){
+  const q=(document.getElementById('s-search')||{value:''}).value.toLowerCase();
+  const gid=(document.getElementById('s-group')||{value:''}).value;
+  const prog=(document.getElementById('s-prog')||{value:''}).value;
+
+  const totals=GROUPS.reduce((a,g)=>(a[g.id]=countG(g.id,''),a),{});
+  const grandQ=GROUPS.reduce((a,g)=>a+totalQuota(g),0);
+
+  const gSel=document.getElementById('s-group');if(gSel){const cv=gSel.value;gSel.innerHTML='<option value="">📂 ค้นหาด้วยกลุ่มเป้าหมาย</option>'+GROUPS.map(g=>`<option value="${g.id}"${g.id===cv?' selected':''}>${g.name}</option>`).join('');}
+  const progs=[...new Set(entries.map(e=>e.program))].sort();
+  const pSel=document.getElementById('s-prog');if(pSel){const cv=pSel.value;pSel.innerHTML='<option value="">🎓 ค้นหาด้วยสาขาวิชา</option>'+progs.map(p=>`<option${p===cv?' selected':''}>${p}</option>`).join('');}
+
+  let data=entries;
+  if(q)data=data.filter(e=>`${e.fname} ${e.lname} ${e.org||''} ${e.position||''} ${e.dept||''} ${e.subDept||''}`.toLowerCase().includes(q));
+  if(gid)data=data.filter(e=>e.gid===gid);
+  if(prog)data=data.filter(e=>e.program===prog);
+
+  document.getElementById('page-admin').innerHTML=`
+    <div class="admin-note">🛡️ <b>ข้อมูลเห็นเฉพาะผู้รับผิดชอบงานเท่านั้น</b> &nbsp;|&nbsp; 🔐 <a href="#" onclick="adminLogout();return false" style="color:#185FA5; font-weight:600">ออกจากระบบที่นี่</a></div>
+    <div class="stat-grid">
+      <div class="stat-card" style="background: #FFFBEB; border-color: #FDE68A;"><div class="stat-n" style="color:#D97706">${entries.length}/${grandQ}</div><div class="stat-l" style="font-weight:600;color:#B45309">📈 ยอดรวมทั้งหมด</div></div>
+      ${GROUPS.slice(0,3).map(g=>`<div class="stat-card"><div class="stat-n" style="color:${g.color}">${totals[g.id]}/${totalQuota(g)}</div><div class="stat-l" style="font-size:11px">${g.name}</div></div>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1.5rem">
+      ${GROUPS.map(g=>{const f=totals[g.id];const t=totalQuota(g);const pct=Math.min(100,Math.round(f/t*100));
+        return`<div style="padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border: 1px solid var(--color-border-tertiary)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;font-weight:600;color:#4A5568">${g.name}</span>
+            <span style="font-size:12px;font-weight:600">${f}/${t}</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${g.color}"></div></div>
+        </div>`;}).join('')}
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
+        <p style="font-size:16px;font-weight:600;margin:0;color:#2D3748">📋 ข้อมูลตารางสรุปรายชื่อทั้งหมด</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#ECFDF5; color:#065F46; border-color:#A7F3D0" onclick="exportCSV()">📊 ดาวน์โหลดไฟล์ Excel (CSV)</button>
+          <button class="btn btn-sm btn-danger" onclick="clearAll()">💥 รีเซ็ตล้างข้อมูลทั้งหมด</button>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="s-search" placeholder="🔍 ค้นหาชื่อคน..." oninput="renderAdmin()" style="max-width:200px" value="">
+        <select id="s-group" onchange="renderAdmin()"></select>
+        <select id="s-prog" onchange="renderAdmin()"></select>
+      </div>
+      <div id="admin-table-wrap">${buildAdminTable(data)}</div>
+    </div>`;
+}
+
+function mainNav(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  
+  const targetPage = document.getElementById('page-'+p);
+  if(targetPage) targetPage.classList.add('active');
+  
+  const isAdmin=p==='admin-login'||p==='admin';
+  document.querySelectorAll('.tab')[isAdmin?1:0].classList.add('active');
+  if(p==='home')renderHome();
+}
+
+function adminLogin(){
+  const passwordInput = document.getElementById('pw-input').value.trim();
+  if(passwordInput === ADMIN_PW){
+    sessionStorage.setItem('qa_admin', '1');
+    document.getElementById('pw-err').style.display='none';
+    mainNav('admin');renderAdmin();
+  }else{
+    document.getElementById('pw-err').style.display='block';
+  }
+}
+
+function adminLogout(){sessionStorage.removeItem('qa_admin'); if(document.getElementById('pw-input')) document.getElementById('pw-input').value=''; mainNav('admin-login');}
+
+function deleteEntry(id){if(!confirm('🔮 ยืนยันที่จะลบรายชื่อผู้เข้าสัมภาษณ์รายนี้ออกไหมคะ?'))return;entries=entries.filter(e=>e.id!==id);save();renderAdmin();}
+function clearAll(){if(!confirm('🚨 คำเตือน! คุณกำลังจะลบข้อมูลที่กรอกทั้งหมดออกถาวร ยืนยันไหมคะ?'))return;entries=[];save();renderAdmin();}
+
+function exportCSV(){
+  if(!entries.length){alert('ยังไม่มีรายชื่อเก็บไว้สำหรับนำออกเลยค่ะ');return}
+  const allF=['gname','program','fname','lname','position','year','dept','subDept','phone','line','email','org','note','ts'];
+  const lbl={gname:'กลุ่ม',program:'หลักสูตร',fname:'ชื่อ',lname:'นามสกุล',position:'ตำแหน่ง',year:'ชั้นปี',dept:'ภาควิชา/กลุ่มงาน',subDept:'หลักสูตร/ฝ่าย/งาน',phone:'เบอร์โทร',line:'Line ID',email:'อีเมล',org:'สถานที่',note:'หมายเหตุ',ts:'วันที่กรอก'};
+  const csv='\uFEFF'+[allF.map(f=>lbl[f]),...entries.map((e,i)=>['ลำดับ '+(i+1),...allF.slice(1).map(f=>e[f]||'')])].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='สรุปรายชื่อผู้เข้าสัมภาษณ์_QA.csv';a.click();
+}
+
+// โหลดเข้าสู่ระบบครั้งแรก
+window.onload = function() {
+  if(sessionStorage.getItem('qa_admin')){
+    mainNav('admin');
+    renderAdmin();
+  } else {
+    mainNav('home');
+  }
+};
+</script>
+</body>
+</html>
