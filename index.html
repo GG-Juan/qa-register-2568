@@ -51,7 +51,8 @@
     .back-btn:hover{text-decoration:underline}
     .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:1.25rem}
     .stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px;border: 1px solid var(--color-border-secondary);text-align: center;}
-    .stat-n{font-size:24px;font-weight:600}.stat-l{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+    .stat-n{font-size:24px;font-weight:600}
+    .stat-l{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
     .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem}
     .filter-bar input,.filter-bar select{width:auto;flex:1;min-width:140px}
     table{width:100%;border-collapse:collapse;font-size:14px}
@@ -380,7 +381,7 @@ function submitEntry(gid,formType){
   showToast('⏳ กำลังส่งข้อมูลไปยัง Google Sheets...', 'ok');
 
   if(!SCRIPT_URL || SCRIPT_URL.includes("ใส่ลิงก์เว็บแอป")) {
-     showToast('⚠️ ตรวจพบระบบออฟไลน์: บันทึกเฉพาะในเครื่องนี้เท่านั้น (กรุณาใส่ SCRIPT_URL ในโค้ดด้วยค่ะ)', 'err');
+     showToast('⚠️ ตรวจพบระบบออฟไลน์: บันทึกเฉพาะในเครื่องนี้เท่านั้น', 'err');
      clearFormFields(formType);
      refreshFormList();
      renderHome();
@@ -399,10 +400,64 @@ function submitEntry(gid,formType){
     clearFormFields(formType);
     refreshFormList();
     renderHome();
+    // ดึงข้อมูลใหม่หลังจากส่งสำเร็จ
+    fetchFromSheets();
   })
   .catch(err => {
     console.error(err);
     showToast('⚠️ ส่งข้อมูลออนไลน์ไม่สำเร็จ แต่บันทึกไว้ในเครื่องให้แล้วค่ะ', 'err');
+  });
+}
+
+// 🌐 ฟังก์ชันดึงข้อมูลรวมทั้งหมดจาก Google Sheets มาแสดงผลในระบบแอดมินแบบเรียลไทม์
+function fetchFromSheets() {
+  if(!SCRIPT_URL || SCRIPT_URL.includes("ใส่ลิงก์เว็บแอป")) return;
+  
+  const syncBtn = document.getElementById('sync-btn');
+  if(syncBtn) {
+    syncBtn.disabled = true;
+    syncBtn.innerHTML = "⏳ กำลังดึงข้อมูลจาก Sheets...";
+  }
+
+  fetch(SCRIPT_URL + "?action=read")
+  .then(res => res.json())
+  .then(data => {
+    if(Array.isArray(data) && data.length > 0) {
+      // จับคู่ข้อมูลจาก Google Sheets ให้เข้ากับโครงสร้างระบบแอดมิน
+      entries = data.map((item, idx) => ({
+        id: item.id || (Date.now() + idx),
+        gid: item.gid || '',
+        gname: item.gname || '',
+        program: item.program || '(ไม่ระบุหลักสูตร)',
+        fname: item.fname || '',
+        lname: item.lname || '',
+        position: item.position || '',
+        year: item.year || '',
+        dept: item.dept || '',
+        subDept: item.subDept || '',
+        phone: item.phone || '',
+        line: item.line || '',
+        email: item.email || '',
+        org: item.org || '',
+        note: item.note || '',
+        ts: item.ts || ''
+      }));
+      save(); // อัปเดตข้อมูลลงฐานข้อมูลเครื่องนี้ด้วย
+      if(document.getElementById('page-admin').classList.contains('active')) {
+        renderAdmin();
+      } else {
+        renderHome();
+      }
+    }
+  })
+  .catch(err => {
+    console.error("Error fetching data:", err);
+  })
+  .finally(() => {
+    if(syncBtn) {
+      syncBtn.disabled = false;
+      syncBtn.innerHTML = "🔄 อัปเดตดึงข้อมูลล่าสุดจาก Google Sheets";
+    }
   });
 }
 
@@ -426,15 +481,15 @@ function buildMiniTable(data){
       <td style="color:var(--color-text-secondary);text-align:center">${i+1}</td>
       <td style="font-weight:500">👤 ${e.fname} ${e.lname}</td>
       <td style="font-size:13px">📞 ${e.phone||'—'}<br><small>${e.email||''}</small></td>
-      <td style="font-size:13px">📌 ${e.position||e.year||'—'}${e.dept ? `<br><small>📂 ${e.dept}</small>` : ''}${e.subDept ? `<br><small>🏢 ${e.subDept}</small>` : ''}</td>
+      <td style="font-size:13px">📌 ${e.position||e.year||'—'}${e.dept ? `<br><small>📂 ${e.dept}</small>` : ''}</td>
     </tr>`).join('')}
   </tbody></table></div>`;
 }
 
 function buildAdminTable(data){
-  if(!data.length) return '<p class="empty">🫙<br>ยังไม่มีรายชื่อผู้บันทึกเข้ามาเลยจ้า</p>';
-  const allFields=['fname','lname','position','year','dept','subDept','phone','line','email','org','note'];
-  const labels={fname:'ชื่อ',lname:'นามสกุล',position:'ตำแหน่ง/วิชาการ',year:'ชั้นปี',dept:'ภาควิชา/กลุ่มงาน',subDept:'หลักสูตร/ฝ่าย/งาน',phone:'เบอร์โทร',line:'Line ID',email:'อีเมล',org:'สถานที่',note:'หมายเหตุ'};
+  if(!data.length) return '<p class="empty">🫙<br>ยังไม่มีรายชื่อผู้บันทึกเข้ามาเลยจ้า (ลองกดปุ่มอัปเดตด้านบน)</p>';
+  const allFields=['fname','lname','position','year','dept','phone','line','email','org','note'];
+  const labels={fname:'ชื่อ',lname:'นามสกุล',position:'ตำแหน่ง/วิชาการ',year:'ชั้นปี',dept:'กลุ่มงาน/ภาควิชา',phone:'เบอร์โทร',line:'Line ID',email:'อีเมล',org:'สถานที่',note:'หมายเหตุ'};
   const usedFields=allFields.filter(f=>data.some(e=>e[f]));
   return `<div style="overflow-x:auto"><table><thead><tr>
     <th>#</th><th>กลุ่มเป้าหมาย</th><th>หลักสูตร/สาขา</th>
@@ -464,14 +519,17 @@ function renderAdmin(){
   const pSel=document.getElementById('s-prog');if(pSel){const cv=pSel.value;pSel.innerHTML='<option value="">🎓 ค้นหาด้วยสาขาวิชา</option>'+progs.map(p=>`<option${p===cv?' selected':''}>${p}</option>`).join('');}
 
   let data=entries;
-  if(q)data=data.filter(e=>`${e.fname} ${e.lname} ${e.org||''} ${e.position||''} ${e.dept||''} ${e.subDept||''}`.toLowerCase().includes(q));
+  if(q)data=data.filter(e=>`${e.fname} ${e.lname} ${e.org||''} ${e.position||''} ${e.dept||''}`.toLowerCase().includes(q));
   if(gid)data=data.filter(e=>e.gid===gid);
   if(prog)data=data.filter(e=>e.program===prog);
 
   document.getElementById('page-admin').innerHTML=`
-    <div class="admin-note">🛡️ <b>ข้อมูลเห็นเฉพาะผู้รับผิดชอบงานเท่านั้น (ประวัติเครื่องนี้)</b> &nbsp;|&nbsp; <a href="#" onclick="adminLogout();return false" style="color:#185FA5; font-weight:600">ออกจากระบบที่นี่</a></div>
+    <div class="admin-note">🛡️ <b>หน้าควบคุมฐานข้อมูลกลางแอดมิน</b> &nbsp;|&nbsp; <a href="#" onclick="adminLogout();return false" style="color:#185FA5; font-weight:600">ออกจากระบบที่นี่</a></div>
+    <div style="margin-bottom: 15px; text-align: right;">
+       <button id="sync-btn" class="btn btn-primary" onclick="fetchFromSheets()">🔄 อัปเดตดึงข้อมูลล่าสุดจาก Google Sheets</button>
+    </div>
     <div class="stat-grid">
-      <div class="stat-card" style="background: #FFFBEB; border-color: #FDE68A;"><div class="stat-n" style="color:#D97706">${entries.length}/${grandQ}</div><div class="stat-l" style="font-weight:600;color:#B45309">📈 ยอดรวมในเครื่องนี้</div></div>
+      <div class="stat-card" style="background: #FFFBEB; border-color: #FDE68A;"><div class="stat-n" style="color:#D97706">${entries.length}/${grandQ}</div><div class="stat-l" style="font-weight:600;color:#B45309">📈 ยอดรวมทั้งหมด</div></div>
       ${GROUPS.slice(0,3).map(g=>`<div class="stat-card"><div class="stat-n" style="color:${g.color}">${totals[g.id]}/${totalQuota(g)}</div><div class="stat-l" style="font-size:11px">${g.name}</div></div>`).join('')}
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1.5rem">
@@ -486,10 +544,10 @@ function renderAdmin(){
     </div>
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
-        <p style="font-size:16px;font-weight:600;margin:0;color:#2D3748">📋 ข้อมูลตารางสรุปรายชื่อ (ดูฐานข้อมูลกลางโปรดดูที่ Google Sheets 📊)</p>
+        <p style="font-size:16px;font-weight:600;margin:0;color:#2D3748">📋 ตารางสรุปรายชื่อผู้ลงทะเบียนรวม</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-sm" style="background:#ECFDF5; color:#065F46; border-color:#A7F3D0" onclick="exportCSV()">📊 ดาวน์โหลดไฟล์เครื่องนี้ (CSV)</button>
-          <button class="btn btn-sm btn-danger" onclick="clearAll()">💥 รีเซ็ตรายชื่อเครื่องนี้</button>
+          <button class="btn btn-sm" style="background:#ECFDF5; color:#065F46; border-color:#A7F3D0" onclick="exportCSV()">📊 ดาวน์โหลดไฟล์ CSV</button>
+          <button class="btn btn-sm btn-danger" onclick="clearAll()">💥 เคลียร์ตารางหน้าจอ</button>
         </div>
       </div>
       <div class="filter-bar">
@@ -509,6 +567,7 @@ function mainNav(p){
   const isAdmin=p==='admin-login'||p==='admin';
   document.querySelectorAll('.tab')[isAdmin?1:0].classList.add('active');
   if(p==='home')renderHome();
+  if(p==='admin')fetchFromSheets(); // ดึงข้อมูลทันทีเมื่อแอดมินล๊อกอินเข้ามา
 }
 
 function adminLogin(){
@@ -516,19 +575,19 @@ function adminLogin(){
   if(passwordInput === ADMIN_PW){
     sessionStorage.setItem('qa_admin', '1');
     document.getElementById('pw-err').style.display='none';
-    mainNav('admin');renderAdmin();
+    mainNav('admin');
   }else{
     document.getElementById('pw-err').style.display='block';
   }
 }
 function adminLogout(){sessionStorage.removeItem('qa_admin'); if(document.getElementById('pw-input')) document.getElementById('pw-input').value=''; mainNav('admin-login');}
-function deleteEntry(id){if(!confirm('🔮 ยืนยันที่จะลบรายชื่อผู้เข้าสัมภาษณ์รายนี้ออกไหมคะ? (ลบเฉพาะในเครื่องนี้)'))return;entries=entries.filter(e=>e.id!==id);save();renderAdmin();}
-function clearAll(){if(!confirm('🚨 ยืนยันลบประวัติเฉพาะเครื่องนี้ไหมคะ? (ไม่มีผลกับข้อมูลใน Google Sheets)'))return;entries=[];save();renderAdmin();}
+function deleteEntry(id){if(!confirm('🔮 ยืนยันที่จะลบรายชื่อผู้เข้าสัมภาษณ์รายนี้ออกไหมคะ? (ลบเฉพาะหน้าจอเครื่องนี้)'))return;entries=entries.filter(e=>e.id!==id);save();renderAdmin();}
+function clearAll(){if(!confirm('🚨 ยืนยันล้างการแสดงผลชั่วคราวบนหน้าจอเครื่องนี้ไหมคะ?'))return;entries=[];save();renderAdmin();}
 
 function exportCSV(){
   if(!entries.length){alert('ยังไม่มีรายชื่อเก็บไว้สำหรับนำออกเลยค่ะ');return}
-  const allF=['gname','program','fname','lname','position','year','dept','subDept','phone','line','email','org','note','ts'];
-  const lbl={gname:'กลุ่ม',program:'หลักสูตร',fname:'ชื่อ',lname:'นามสกุล',position:'ตำแหน่ง',year:'ชั้นปี',dept:'ภาควิชา/กลุ่มงาน',subDept:'หลักสูตร/ฝ่าย/งาน',phone:'เบอร์โทร',line:'Line ID',email:'อีเมล',org:'สถานที่',note:'หมายเหตุ',ts:'วันที่กรอก'};
+  const allF=['gname','program','fname','lname','position','year','dept','phone','line','email','org','note','ts'];
+  const lbl={gname:'กลุ่ม',program:'หลักสูตร',fname:'ชื่อ',lname:'นามสกุล',position:'ตำแหน่ง',year:'ชั้นปี',dept:'กลุ่มงาน/ภาควิชา',phone:'เบอร์โทร',line:'Line ID',email:'อีเมล',org:'สถานที่',note:'หมายเหตุ',ts:'วันที่กรอก'};
   const csv='\uFEFF'+[allF.map(f=>lbl[f]),...entries.map((e,i)=>['ลำดับ '+(i+1),...allF.slice(1).map(f=>e[f]||'')])].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
@@ -536,7 +595,8 @@ function exportCSV(){
 }
 
 window.onload = function() {
-  if(sessionStorage.getItem('qa_admin')){mainNav('admin');renderAdmin();} 
+  fetchFromSheets(); // ดึงข้อมูลตั้งแต่เปิดหน้าเว็บเพื่ออัปเดตหลอดเปอร์เซ็นต์ความคืบหน้า (Progress bar)
+  if(sessionStorage.getItem('qa_admin')){mainNav('admin');} 
   else {mainNav('home');}
 };
 </script>
